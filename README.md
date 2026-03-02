@@ -5,7 +5,7 @@ This project is a simple AI-powered flashcard generator built using:
 
 - Python (Flask)
 - Ollama (Local LLM)
-- Phi-3 model (lightweight model for low RAM systems)
+- Phi-3 model (lightweight model for low RAM systems) [You can also use llama3, mistral models they are better and faster but takes more memory space]
 - PDF text extraction
 
 It allows users to:

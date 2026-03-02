@@ -19,14 +19,19 @@ Text:
 
     try:
         response = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": "phi3",   
-                "prompt": prompt,
-                "stream": False
-            },
-            timeout=120
-        )
+        "http://localhost:11434/api/generate",
+    json={
+        "model": "phi3",   # or mistral if you insist
+        "prompt": prompt,
+        "stream": False,
+        "options": {
+            "num_ctx": 1024,     # reduce memory usage
+            "num_predict": 200,  # limit output size
+            "temperature": 0.7
+        }
+    },
+    timeout=500
+)
 
         response.raise_for_status()
         if response.status_code != 200:

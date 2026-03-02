@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Flashcard Generator</title>
+</head>
+<body>
+    <h1>AI Flashcard Generator (Local LLM)</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <h3>Paste Text:</h3>
+        <textarea name="text" rows="10" cols="80"></textarea>
+
+        <h3>OR Upload PDF:</h3>
+        <input type="file" name="file">
+
+        <br><br>
+        <button type="submit">Generate Flashcards</button>
+    </form>
+
+    {% if flashcards %}
+        <h2>Generated Flashcards:</h2>
+        <ul>
+            {% for q, a in flashcards %}
+                <li>
+                    <strong>Q:</strong> {{ q }}<br>
+                    <strong>A:</strong> {{ a }}
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

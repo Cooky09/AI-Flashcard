@@ -1,33 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>AI Flashcard Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="file"],
+        textarea {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        .flashcards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            backface-visibility: hidden;
+            padding: 15px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .card-front {
+            background: #edf2ff;
+            font-weight: bold;
+        }
+
+        .card-back {
+            background: #c3dafe;
+            transform: rotateY(180deg);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>AI Flashcard Generator (Local LLM)</h1>
 
-    <form method="POST" enctype="multipart/form-data">
-        <h3>Paste Text:</h3>
-        <textarea name="text" rows="10" cols="80"></textarea>
+<div class="container">
 
-        <h3>OR Upload PDF:</h3>
-        <input type="file" name="file">
+    <h1>📚 AI Flashcard Generator</h1>
 
-        <br><br>
-        <button type="submit">Generate Flashcards</button>
-    </form>
+    <div class="upload-section">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file">
+
+            <p>OR</p>
+
+            <textarea name="text" rows="4" placeholder="Paste your text here..."></textarea>
+
+            <br>
+            <button type="submit">Generate Flashcards</button>
+        </form>
+    </div>
 
     {% if flashcards %}
-        <h2>Generated Flashcards:</h2>
-        <ul>
-            {% for q, a in flashcards %}
-                <li>
-                    <strong>Q:</strong> {{ q }}<br>
-                    <strong>A:</strong> {{ a }}
-                </li>
-                <br>
-            {% endfor %}
-        </ul>
+    <div class="flashcards">
+        {% for question, answer in flashcards %}
+        <div class="card" onclick="this.classList.toggle('flipped')">
+            <div class="card-inner">
+                <div class="card-front">
+                    {{ question }}
+                </div>
+                <div class="card-back">
+                    {{ answer }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
+
+    <div class="footer">
+        Built with Flask + Ollama (Local LLM)
+    </div>
+
+</div>
+
 </body>
 </html>

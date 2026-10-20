@@ -1,106 +1,252 @@
-# AI-Flashcard
-# 📚 AI Flashcard Generator (Local LLM + Flask)
+# 📚 AI Flashcard Generator
 
-This project is a simple AI-powered flashcard generator built using:
+A lightweight AI-powered flashcard generator that uses a **local Large Language Model (LLM)** to turn PDF content or pasted text into study questions and answers.
 
-- Python (Flask)
-- Ollama (Local LLM)
-- Phi-3 model (lightweight model for low RAM systems) [You can also use llama3, mistral models they are better and faster but takes more memory space]
-- PDF text extraction
+The application is built with **Python, Flask, Ollama, and PyMuPDF**, with local inference through the **Phi-3** model.
 
-It allows users to:
-- Upload a PDF
-- Or paste text manually
-- Automatically generate flashcards in Q/A format
+> The project was designed to explore practical local LLM application development on hardware with limited memory.
 
 ---
 
-## 🚀 Why Phi-3?
+## ✨ Features
 
-This project uses **phi3** instead of larger models like mistral or llama3 because:
+- 📄 Upload a PDF and extract its text
+- ✍️ Paste text directly into the application
+- 🤖 Generate AI-powered question-and-answer flashcards
+- 🧠 Run LLM inference locally using Ollama
+- 🔒 Keep document content and inference on the local machine
+- 🃏 Display generated flashcards through a web interface
+- ⚡ Lightweight setup suitable for resource-constrained systems
 
-- My system has limited available RAM.
-- Larger models require 4–5GB+ free memory.
-- Phi-3 is lightweight and works reliably on lower-memory systems.
-- It is ideal for small PDFs (KB-sized files).
+---
 
-⚠️ Currently tested with small PDFs (~KB size, around 100–300 words).
+## 🏗️ Architecture
+
+```text
+                  User
+                   │
+             PDF / Text Input
+                   │
+                   ▼
+            ┌─────────────┐
+            │    Flask    │
+            │  Web App    │
+            └──────┬──────┘
+                   │
+          ┌────────┴────────┐
+          │                 │
+          ▼                 ▼
+     PyMuPDF          Text Input
+   PDF Extraction          │
+          │                │
+          └────────┬───────┘
+                   ▼
+             Prompt Builder
+                   │
+                   ▼
+              Ollama API
+             localhost:11434
+                   │
+                   ▼
+                Phi-3
+             Local LLM
+                   │
+                   ▼
+            Q/A Flashcards
+                   │
+                   ▼
+              Web Interface
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| **Python** | Application development |
+| **Flask** | Web application and HTTP handling |
+| **Ollama** | Local LLM inference |
+| **Phi-3** | Lightweight local language model |
+| **PyMuPDF** | PDF text extraction |
+| **HTML/CSS** | Flashcard interface |
 
 ---
 
 ## 🧠 How It Works
 
-1. User uploads a PDF or pastes text.
-2. Text is extracted.
-3. Text is sent to Ollama locally via API (`localhost:11434`).
-4. Phi-3 generates 5 flashcards.
-5. The app parses Q/A pairs and displays them.
+1. The user uploads a PDF or enters text manually.
+2. PDF content is extracted using **PyMuPDF**.
+3. The extracted/input text is passed to the flashcard generation component.
+4. A prompt is sent to the local **Ollama API**.
+5. **Phi-3** generates question-and-answer pairs.
+6. The application parses the generated output.
+7. The resulting flashcards are displayed through the Flask interface.
 
-Everything runs locally — no external API required.
+The application communicates with Ollama locally through:
+
+```text
+http://localhost:11434
+```
+
+No external LLM API is required.
 
 ---
 
-# 🛠 Installation Guide
+## 💡 Engineering Decisions
 
-## 1️⃣ Clone the Repository
+### Why use a local LLM?
+
+The application was designed around local inference rather than a hosted AI API.
+
+This provides:
+
+- Local processing of document content
+- No external AI API dependency
+- No API key requirement
+- An inexpensive development environment
+- A practical way to experiment with LLM applications on local hardware
+
+### Why Phi-3?
+
+The original implementation was developed on a system with limited available RAM.
+
+Larger models such as Mistral or Llama can require significantly more memory, while Phi-3 provides a lightweight option for experimentation and smaller documents.
+
+The model can be changed through Ollama depending on available hardware.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Install:
+
+- Python 3.x
+- Ollama
+
+Verify Ollama:
 
 ```bash
-git clone <your-repo-link>
-cd your-project-folder
-2️⃣ Install Python Dependencies
-pip install flask requests pymupdf
-3️⃣ Install Ollama (Required)
-Download Ollama
-
-Go to:
-
-👉 https://ollama.com/download
-
-Download and install the Windows version.
-
-After installation, open PowerShell and verify:
-
 ollama --version
-4️⃣ Download the Phi-3 Model
+```
 
-Run:
+### 1. Clone the repository
 
+```bash
+git clone https://github.com/Cooky09/AI-Flashcard.git
+cd AI-Flashcard
+```
+
+### 2. Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Download the Phi-3 model
+
+```bash
 ollama pull phi3
+```
 
-This downloads the lightweight model used in this project.
+### 4. Start Ollama
 
-5️⃣ Start Ollama Server
+If Ollama is not already running:
 
-Before running Flask, make sure Ollama is running:
-
+```bash
 ollama serve
+```
 
-If it says "address already in use", it means Ollama is already running in the background.
+Ollama runs locally on:
 
-6️⃣ Run the Flask App
+```text
+http://localhost:11434
+```
 
-In another terminal:
+### 5. Start the Flask application
 
+```bash
 python app.py
+```
 
-Then open your browser:
+The application will be available at:
 
+```text
 http://127.0.0.1:5000
-📂 Project Structure
-project/
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+AI-Flashcard/
 │
 ├── app.py
 ├── flashcard_generator.py
 ├── pdf_utils.py
+├── requirements.txt
 ├── templates/
-│     └── index.html
+│   └── index.html
+├── .gitignore
 └── README.md
-⚠️ Limitations
+```
 
-Designed for small PDFs (KB-sized).
+### Key components
 
-Large PDFs may fail due to RAM limits.
+**`app.py`**
 
-Scanned PDFs (image-based) will not work unless OCR is added.
+Flask application and web request handling.
 
-Model output formatting may vary slightly.
+**`flashcard_generator.py`**
+
+Handles communication with Ollama and flashcard generation.
+
+**`pdf_utils.py`**
+
+Extracts text from uploaded PDF documents.
+
+**`templates/index.html`**
+
+Provides the web interface for uploading content and displaying flashcards.
+
+---
+
+## ⚠️ Current Limitations
+
+The current implementation is intentionally lightweight.
+
+- Large PDFs may exceed the practical context or memory available to the local model.
+- Scanned/image-based PDFs require OCR before text can be extracted.
+- LLM output formatting can vary.
+- The application currently targets relatively small documents.
+- Flashcard quality depends on the selected local model and source text.
+
+---
+
+## 🔮 Potential Improvements
+
+Possible future improvements include:
+
+- OCR support for scanned documents
+- Structured JSON output validation
+- Better handling of large documents through chunking
+- Configurable number of flashcards
+- Multiple Ollama model selection
+- Automated testing
+- Docker-based deployment
+- Persistent flashcard storage
+- User accounts and saved study sets
+- Improved evaluation of generated flashcard quality
+
+---
+
+## 🎯 Project Purpose
+
+This project represents an early stage of my exploration into **local LLM application development**.
+
+It demonstrates the fundamentals of integrating a locally hosted language model into a web application, processing user-provided documents, constructing prompts, and turning model output into a usable application feature.
+
+It also provides the foundation for my later work with **RAG, semantic search, AI agents, evaluation, and production-oriented AI systems**.
